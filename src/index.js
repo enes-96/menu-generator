@@ -1,10 +1,10 @@
-class MenuGenerator {
-  constructor(links, buttonText) {
-    this.links = links;
+class DropdownMenu {
+  constructor(menuLinks, buttonText) {
+    this.menuLinks = menuLinks;
     this.buttonText = buttonText;
     this.menuButton = this.createMenuButton();
     this.dropdownMenu = this.createDropdownMenu();
-    this.addToggleFunctionality();
+    this.bindMenuEvents();
   }
 
   createMenuButton() {
@@ -15,8 +15,6 @@ class MenuGenerator {
     menuButtonText.textContent = this.buttonText;
 
     menuButton.appendChild(menuButtonText);
-    document.body.appendChild(menuButton);
-
     return menuButton;
   }
 
@@ -25,50 +23,51 @@ class MenuGenerator {
     dropdownMenu.classList.add("dropdown-menu");
     dropdownMenu.classList.add("hidden");
 
-    this.links.forEach((link) => {
+    const menuLinks = this.menuLinks.map((link) => {
       const menuLink = document.createElement("a");
       menuLink.textContent = link.text;
       menuLink.href = link.href;
       menuLink.classList.add("dropdown-link");
+      return menuLink;
+    });
+
+    menuLinks.forEach((menuLink) => {
       dropdownMenu.appendChild(menuLink);
     });
 
-    document.body.appendChild(dropdownMenu);
     return dropdownMenu;
   }
 
-  addToggleFunctionality() {
-    const toggleDropdown = () => {
-      const isDropdownHidden = this.dropdownMenu.classList.contains("hidden");
-      if (isDropdownHidden) {
-        this.dropdownMenu.classList.remove("hidden");
-        this.dropdownMenu.classList.add("slideDown");
+  bindMenuEvents() {
+    this.menuButton.addEventListener("click", () => {
+      this.dropdownMenu.classList.toggle("hidden");
+    });
+  }
 
-        this.menuButton.style.borderRadius = "8px 8px 0 0";
-      } else {
-        this.dropdownMenu.classList.add("hidden");
+  render() {
+    const dropdownMenuContainer = document.createElement("div");
 
-        this.menuButton.style.borderRadius = "8px";
-      }
-    };
+    dropdownMenuContainer.appendChild(this.menuButton);
+    dropdownMenuContainer.appendChild(this.dropdownMenu);
 
-    this.menuButton.addEventListener("click", toggleDropdown);
+    document.body.appendChild(dropdownMenuContainer);
   }
 }
 
-const myLinks = [
+const myMenuLinks = [
   {
     href: "#",
-    text: "link1",
+    text: "Link 1",
   },
   {
     href: "#",
-    text: "link2",
+    text: "Link 2",
   },
   {
     href: "#",
-    text: "link3",
+    text: "Link 3",
   },
 ];
 
-const newButton = new MenuGenerator(myLinks, "My Dropdown");
+const dropdownMenu = new DropdownMenu(myMenuLinks, "My Dropdown");
+dropdownMenu.render();
