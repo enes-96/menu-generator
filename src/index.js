@@ -1,38 +1,62 @@
 class MenuGenerator {
-  constructor(container, links, buttonText) {
-    this.container = container;
+  constructor(links, buttonText) {
     this.links = links;
     this.buttonText = buttonText;
-    this.menuButton = this.menuButtonGenerator();
-    this.dropdDown = this.dropdDownGenerator();
+    this.menuButton = this.createMenuButton();
+    this.dropdownMenu = this.createDropdownMenu();
+    this.addToggleFunctionality();
   }
-  menuButtonGenerator() {
-    const dropddownButton = document.createElement("div");
-    dropddownButton.classList.add("menu-btn");
-    const dropddownButtonText = document.createElement("p");
-    dropddownButtonText.textContent = this.buttonText;
-    dropddownButton.appendChild(dropddownButtonText);
-    document.body.appendChild(dropddownButton);
+
+  createMenuButton() {
+    const menuButton = document.createElement("div");
+    menuButton.classList.add("menu-btn");
+
+    const menuButtonText = document.createElement("p");
+    menuButtonText.textContent = this.buttonText;
+
+    menuButton.appendChild(menuButtonText);
+    document.body.appendChild(menuButton);
+
+    return menuButton;
   }
-  dropdDownGenerator() {
-    const dropdDownList = document.createElement("div");
-    dropdDownList.classList.add("hidden-links");
-    document.body.appendChild(dropdDownList);
+
+  createDropdownMenu() {
+    const dropdownMenu = document.createElement("div");
+    dropdownMenu.classList.add("dropdown-menu");
+    dropdownMenu.classList.add("hidden");
 
     this.links.forEach((link) => {
       const menuLink = document.createElement("a");
       menuLink.textContent = link.text;
-      dropdDownList.appendChild(menuLink);
+      menuLink.href = link.href;
+      menuLink.classList.add("dropdown-link");
+      dropdownMenu.appendChild(menuLink);
     });
+
+    document.body.appendChild(dropdownMenu);
+    return dropdownMenu;
+  }
+
+  addToggleFunctionality() {
+    const toggleDropdown = () => {
+      const isDropdownHidden = this.dropdownMenu.classList.contains("hidden");
+      if (isDropdownHidden) {
+        this.dropdownMenu.classList.remove("hidden");
+        this.dropdownMenu.classList.add("slideDown");
+
+        this.menuButton.style.borderRadius = "8px 8px 0 0";
+      } else {
+        this.dropdownMenu.classList.add("hidden");
+
+        this.menuButton.style.borderRadius = "8px";
+      }
+    };
+
+    this.menuButton.addEventListener("click", toggleDropdown);
   }
 }
-const menuBtn = document.querySelector(".menu-btn");
-menuBtn.addEventListener("click", () => handleButtonClick());
 
-function handleButtonClick() {
-  console.log(12);
-}
-const myLInks = [
+const myLinks = [
   {
     href: "#",
     text: "link1",
@@ -41,10 +65,10 @@ const myLInks = [
     href: "#",
     text: "link2",
   },
+  {
+    href: "#",
+    text: "link3",
+  },
 ];
-const newButton = new MenuGenerator(
-  "container",
-  myLInks,
-  "text",
-  "Dropdown Menu"
-);
+
+const newButton = new MenuGenerator(myLinks, "My Dropdown");
